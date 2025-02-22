@@ -1,0 +1,1 @@
+console.log("Viva a Cristo Rei!");
