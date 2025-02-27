@@ -1,1 +1,4 @@
-console.log("Viva a Cristo Rei!")
+import { renderCarousel } from "./carousel" ;
+import "./css/style.css";
+
+renderCarousel()
