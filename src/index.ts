@@ -1,4 +1,4 @@
-import { renderCarousel } from "./carousel" ;
-import "./css/style.css";
+import { renderCarousel } from "./carousel"
+import "./css/style.css"
 
 renderCarousel()

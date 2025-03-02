@@ -1,16 +1,18 @@
 @charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Kirang+Haerang&display=swap');
 
 /* Estilos principais. */
 
-@font-face {
-    font-family: 'italiana';
-    src: url('../fonts/italiana.ttf') format('TrueType');
-    font-weight: 100;
+@keyframes scaledown {
+    to {
+        transform: scale(0.9);
+    }
 }
 
 @font-face {
-    font-family: 'kirang';
-    src: url('../fonts/kirang_haerang.ttf') format('TrueType');
+    font-family: 'italiana';
+    src: url('../fonts/italiana.woff2') format('woff2');
+    font-weight: 100;
 }
 
 :root {
@@ -49,7 +51,7 @@ header {
     height: 4rem;
     min-width: 22.2rem; /* 355px */
     padding: 1rem;
-    font-family: 'kirang';
+    font-family: "Kirang Haerang";
     letter-spacing: 3px;
     background-color: var(--primary-color);
     color: var(--white);
@@ -109,6 +111,7 @@ h1 img {
 /* Carrossel */
 
 section.carousel {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -137,6 +140,21 @@ section.carousel {
     scroll-snap-align: center;
 }
 
+.arrow {
+    position: absolute;
+}
+
+.arrow:hover {
+ animation: scaledown 0.3s ease-in-out forwards;    
+}
+
+.arrow-left {
+    left: 1em;
+}
+
+.arrow-right {
+    right: 1em;
+}
 
 .pagination-dots {
     display: flex;
@@ -171,13 +189,12 @@ section.menu {
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 80vh;
+    
     background-color: #000000;
 }
 
 .menu img {
-    width: 90%;
-    height: 23em;
+    width: 24em;
     margin-bottom: 2rem;
 }
 
