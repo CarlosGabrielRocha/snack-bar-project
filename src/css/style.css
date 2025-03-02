@@ -131,6 +131,7 @@ section.carousel {
     overflow-x: auto;
     scroll-snap-stop: always;
     scroll-snap-type: x mandatory;
+    scrollbar-width: none;
 }
 
 #imgs-container img {
