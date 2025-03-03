@@ -1,0 +1,231 @@
+/*!*********************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/css/style.css ***!
+  \*********************************************************************/
+@import url(https://fonts.googleapis.com/css2?family=Kirang+Haerang&display=swap);
+/*!*************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/css/style.css (1) ***!
+  \*************************************************************************/
+
+/* Estilos principais. */
+
+@keyframes scaledown {
+    to {
+        transform: scale(0.9);
+    }
+}
+
+@font-face {
+    font-family: 'italiana';
+    src: url(49714fd34eec42be9bf1.woff2) format('woff2');
+    font-weight: 100;
+}
+
+:root {
+    --primary-color: #221000;
+    --secundary-color: #EBD998;
+    --highlight-color: #FAD012;
+    --white: #fafafa;
+    --white2: #eeeeee;
+    --black: #080808;
+    --radius: 15px;
+    --box-shadow: 2px 3px 8px 0px #0000004b;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: var(--secundary-color);
+    /* overflow-x: hidden; */
+}
+
+/* Cabeçalho */
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 4rem;
+    min-width: 22.2rem; /* 355px */
+    padding: 1rem;
+    font-family: "Kirang Haerang";
+    letter-spacing: 3px;
+    background-color: var(--primary-color);
+    color: var(--white);
+    box-shadow: var(--box-shadow);
+    border-bottom-right-radius: 1.5rem;
+    border-bottom-left-radius: 1.5rem;
+}
+
+header h1 {
+    display: flex;
+    font-size: 2em;
+    font-weight: 100;
+    margin-left: 1em;
+}
+
+h1 img {
+    width: .8em;
+    transform: rotate(40deg);
+}
+
+.purchase-container {
+    position: relative;
+}
+
+.purchase {
+    width: 1.8em;
+}
+
+.items-quantity {
+    position: absolute;
+    bottom: 2px;
+    left: 1px;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 0.8em;
+    color: var(--highlight-color);
+}
+
+/* Principal */
+
+.tutorial-text-container {
+    width: 90%;
+    font-family: 'italiana';
+    padding: 1rem;
+    margin: auto;
+}
+
+.tutorial-text-container h1 {
+    text-decoration: underline;
+    font-size: 1.5em;
+}
+
+.tutorial-text-container p {
+    font-size: 1.2em;
+    margin: .2em 0 0 .8em;
+}
+
+/* Carrossel */
+
+section.carousel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 1em 0;
+    margin-bottom: 3rem;
+    background-color: var(--primary-color);
+    box-shadow: var(--box-shadow);
+}
+
+#imgs-container {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    transition: 1s transform;
+    overflow-x: auto;
+    scroll-snap-stop: always;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+#imgs-container img {
+    width: 95%;
+    margin: 0 1em;
+    transition: transform 3s;
+    scroll-snap-align: center;
+}
+
+.arrow {
+    position: absolute;
+}
+
+.arrow:hover {
+ animation: scaledown 0.3s ease-in-out forwards;    
+}
+
+.arrow-left {
+    left: 1em;
+}
+
+.arrow-right {
+    right: 1em;
+}
+
+.pagination-dots {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    width: fit-content;
+    margin-top: .8rem;
+}
+
+.dot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    background-color: #eeeeee;
+    border-radius: 50%;
+}
+
+.marked-dot::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--highlight-color);
+}
+
+/* Menu */
+
+section.menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    
+    background-color: #000000;
+}
+
+.menu img {
+    width: 24em;
+    margin-bottom: 2rem;
+}
+
+/*  */
+
+#contact-us img {
+    position: fixed;
+    bottom: 4rem;
+    right: .5rem;
+    width: 3em;
+    box-shadow: var(--box-shadow);
+    border-radius: 2rem;
+}
+
+/* Rodapé */
+
+footer {
+    width: 100%;
+    height: 4rem;
+    background-color: var(--primary-color);
+    color: var(--white);
+    margin-top: 2rem;
+    box-shadow: var(--box-shadow);
+}
+
+/* Estilos dinâmicos */
+
+
