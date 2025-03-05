@@ -1,6 +1,5 @@
 import { createElement, newMidiaElement } from "./create-elements"
 
-const sectionCarousel = document.querySelector('#carousel') as HTMLElement
 const dotsContainer = document.querySelector('#pagination-dots') as HTMLElement 
 const imgsContainer = document.querySelector('#imgs-container') as HTMLElement
 
@@ -17,12 +16,15 @@ let carouselIndex: number /* Variável global que acompanha a posição do carro
 let userIsInteracting = false
 let currentIntervalId: any
 function handleAutoRotation() {
-    if (userIsInteracting === true) {
+    if (userIsInteracting && currentIntervalId) {
         clearInterval(currentIntervalId)
-    } else {
+        currentIntervalId = null
+        console.log('Usuário está interagindo')
+    } else if (!userIsInteracting) {
         currentIntervalId = setInterval(() => {
             updateCarousel('right')
         }, 5000) 
+        console.log('Usuário não está interagindo')
     }
 }
 
@@ -58,16 +60,16 @@ export function renderCarousel() {
     /* Cuidando da rolagem automâtica do carrrossel e da interação do usuário para que não cause
     conflitos. */
     handleAutoRotation()
-    sectionCarousel.addEventListener('pointerdown', () => {
+    imgsContainer.addEventListener('scroll', () => {
         userIsInteracting = true
         handleAutoRotation()
     })
 
-    sectionCarousel.addEventListener('pointerup', () => {
+    imgsContainer.addEventListener('scrollend', () => {
         userIsInteracting = false
         handleAutoRotation()
     })
-    
+
     arrowsLogic()
 }
 
@@ -88,6 +90,8 @@ function updateCarousel(direction: 'right' | 'left') {
         imgsContainer.scrollBy({left: -imgsContainer.offsetWidth, behavior: 'smooth'})
         carouselIndex--
     }
+
+    console.log(carouselIndex)
 }
 
 /* Lógica da interação do usuário com as setas. */
@@ -137,15 +141,8 @@ function observerImage(img: HTMLElement, dot: HTMLElement) {
     observer.observe(img)
 }
 
-
 function removeMarkedDots() {
     document.querySelectorAll('.dot').forEach(dot => dot.classList.remove('marked-dot'))
 }  
-
-
-
-
-
-
 
 
