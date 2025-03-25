@@ -1,148 +1,183 @@
 import { createElement, newMidiaElement } from "./create-elements"
 
-const dotsContainer = document.querySelector('#pagination-dots') as HTMLElement 
-const imgsContainer = document.querySelector('#imgs-container') as HTMLElement
+let firstImg: HTMLImageElement
+let lastImg: HTMLImageElement
 
+/* Variável global usada para impedir que o usuário faça spam de cliques e quebre o fluxo do carrossel. */
+let readyToScroll = true
+
+const carouselSection = document.querySelector('#carousel') as HTMLElement
 const urls = [
-    './assets/images/placeholder-image.webp',
-    './assets/images/placeholder-image.webp',
-    './assets/images/placeholder-image.webp',
-    './assets/images/placeholder-image.webp',
-    './assets/images/placeholder-image.webp'
+    './assets/images/placeholder-image1.webp',
+    './assets/images/placeholder-image2.webp',
+    './assets/images/placeholder-image3.webp',
+    './assets/images/placeholder-image4.webp',
+    './assets/images/placeholder-image5.webp'
 ]
 
 let carouselIndex: number /* Variável global que acompanha a posição do carrossel. */
-
-let userIsInteracting = false
-let currentIntervalId: any
+let isInteracting = false
+let currentIntervalId = null
 function handleAutoRotation() {
-    if (userIsInteracting && currentIntervalId) {
+    if (isInteracting && currentIntervalId) {
         clearInterval(currentIntervalId)
         currentIntervalId = null
-        console.log('Usuário está interagindo')
-    } else if (!userIsInteracting) {
-        currentIntervalId = setInterval(() => {
-            updateCarousel('right')
-        }, 5000) 
-        console.log('Usuário não está interagindo')
+        /* console.log(isInteracting) */
+    } else if (!isInteracting && currentIntervalId === null) {
+        requestAnimationFrame(() => {
+            currentIntervalId = setTimeout(() => {
+                updateToRight()
+                currentIntervalId = null
+            }, 4000)
+        })
+        /* console.log(isInteracting) */
     }
-}
+} 
 
-/* Renderiza o carrossel */
-export function renderCarousel() {  
+export function renderCarousel() {
+    const dotsContainer = document.querySelector('#pagination-dots') as HTMLElement
+    const imgsContainer = document.querySelector('#imgs-container') as HTMLElement
 
     urls.forEach((url: string, index: number) => {
         const img = newMidiaElement('img', url)
-        img.dataset.index = String(index)
-        imgsContainer.appendChild(img) 
-        const dot = createElement('div', '', 'dot') 
+        imgsContainer.appendChild(img)
+        const dot = createElement('div', '', 'dot')
 
-        /* O offsetWidth devolve a largura do container, isso está sendo usado para que o carrosel
-        funcione da mesma forma independente da largura do container. Responsivo. */
+        /* O offsetWidth devolve a largura do container, isso está sendo usado para que o carrosel funcione da mesma forma independente da largura do container. */
         dot.addEventListener('click', () => {
-            imgsContainer.scroll({left: imgsContainer.offsetWidth * index, behavior: 'smooth'})
+             imgsContainer.style.transform = `translateX(-${carouselSection.offsetWidth * index}px)`
+            removeMarkedDots()
+            dot.classList.add('marked-dot')
+            carouselIndex = index
         })
 
         dotsContainer.appendChild(dot)
-        observerImage(img, dot)
-    })
-    
-    /* Faz com que o primeiro ponto sempre comece marcado quando a página carregar. 
-    Isso é necessário pois o intersection observer não está percebendo que a primeira imagem
-    está aparecendo na viewport quando a página carrega.
-    */
-    window.addEventListener('load', () => {
-        removeMarkedDots()
-        dotsContainer.querySelectorAll('.dot')[0].classList.add('marked-dot')
-        carouselIndex = 0    
     })
 
-    /* Cuidando da rolagem automâtica do carrrossel e da interação do usuário para que não cause
+    const imgs = imgsContainer.querySelectorAll('img')
+    firstImg = imgs[0].cloneNode() as HTMLImageElement
+    lastImg = imgs[imgs.length - 1].cloneNode() as HTMLImageElement
+
+    /* Faz com que o primeiro ponto sempre comece marcado. */
+    dotsContainer.querySelectorAll('.dot')[0].classList.add('marked-dot')
+    carouselIndex = 0
+
+    /* Cuidando da rolagem automâtica do carrrossel e da interação do usuário para que não ocorra
     conflitos. */
-    handleAutoRotation()
-    imgsContainer.addEventListener('scroll', () => {
-        userIsInteracting = true
         handleAutoRotation()
-    })
+        carouselSection.addEventListener('click', () => {
+            isInteracting = true
+            handleAutoRotation()
+        })
+    
+        carouselSection.addEventListener('transitionend', () => {
+            isInteracting = false
+            handleAutoRotation()
+        }) 
 
-    imgsContainer.addEventListener('scrollend', () => {
-        userIsInteracting = false
-        handleAutoRotation()
-    })
+        carouselSection.addEventListener('pointerout', () => {
+            isInteracting = false
+            handleAutoRotation()
+        })
+
+        window.addEventListener('resize', () => {
+            imgsContainer.style.transform = `translateX(-${carouselSection.offsetWidth * carouselIndex}px)`
+        })
 
     arrowsLogic()
-}
-
-/* Fornece dinâmismo ao carrossel (função utilizada pela rolagem automâmatica) */
-
-/* A diferença entre o scroll e o scrollBy é que o scroll trabalha de forma absoluta e o scrollBy
-de forma relativa. */
-
-function updateCarousel(direction: 'right' | 'left') {
-    const dots = document.querySelectorAll('.dot')
-
-    if (carouselIndex >= dots.length - 1) {
-        imgsContainer.scroll({left: 0})
-    } else if (direction === 'right') {
-        imgsContainer.scrollBy({left: imgsContainer.offsetWidth, behavior: 'smooth'})
-        carouselIndex++ 
-    } else if ((direction === 'left')) {
-        imgsContainer.scrollBy({left: -imgsContainer.offsetWidth, behavior: 'smooth'})
-        carouselIndex--
-    }
-
-    console.log(carouselIndex)
 }
 
 /* Lógica da interação do usuário com as setas. */
 
 function arrowsLogic() {
-    const dots = document.querySelectorAll('.dot')
-    const leftArrow = document.querySelector('.arrow-left')
-    const rightArrow = document.querySelector('.arrow-right')
-
-    leftArrow.addEventListener('click', () => {
-        if (carouselIndex <= 0) {
-            imgsContainer.scroll({left: 200000})
-        } else {
-            imgsContainer.scrollBy({left: -imgsContainer.offsetWidth, behavior: 'smooth'})
-            carouselIndex--
-        } 
-    })
-
-    rightArrow.addEventListener('click', () => {
-       if (carouselIndex >= dots.length - 1) {
-            imgsContainer.scroll({left: 0})
-        } else { 
-            imgsContainer.scrollBy({left: imgsContainer.offsetWidth, behavior: 'smooth'})
-            carouselIndex++
-        } 
-    }) 
-
+    const leftArrow = document.querySelector('.left-arrow-container')
+    const rightArrow = document.querySelector('.right-arrow-container')
+    leftArrow.addEventListener('click', updateToLeft)
+    rightArrow.addEventListener('click', updateToRight)
 }
 
-/* Essa função utiliza a API intersectionObserver para observa a imagem. A função callback 
-    é chamada sempre que a imagem estiver aparecendo 90% na viewport.*/
+/* Permite uma transição fluída quando o carrossel chegar no final. */
 
-function observerImage(img: HTMLElement, dot: HTMLElement) {
- 
-    const observer = new IntersectionObserver((entries) => {
+function updateToRight() {
+    const imgsContainer = document.querySelector('#imgs-container') as HTMLElement
+    if (!imgsContainer.classList.contains('fluid-transition'))
+        imgsContainer.classList.add('fluid-transition')
+    const dots = document.querySelectorAll('.dot')
 
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                removeMarkedDots()
-                dot.classList.add('marked-dot')
-                carouselIndex = Number(img.dataset.index)
-            }
-        })
+    if (readyToScroll) {
+        readyToScroll = false    
 
-    }, {threshold: 0.5})
+        if (carouselIndex >= dots.length - 1) {        
+            imgsContainer.appendChild(firstImg)
+            
+            carouselIndex++
+            imgsContainer.style.transform = `translateX(-${carouselSection.offsetWidth * carouselIndex}px)`
 
-    observer.observe(img)
+            imgsContainer.addEventListener('transitionend', () => {
+                imgsContainer.classList.remove('fluid-transition')
+                imgsContainer.style.transform = `translateX(0px)`
+                imgsContainer.removeChild(firstImg)
+            }, {once: true})
+
+            carouselIndex = 0
+        } else {
+            carouselIndex++
+            imgsContainer.style.transform = `translateX(-${carouselSection.offsetWidth * carouselIndex}px)`
+        }
+
+    }
+    
+    imgsContainer.addEventListener('transitionend', () => readyToScroll = true, {once: true})
+    updateDots()
+}
+
+/* Permite uma transição fluída quando o carrossel passar o inicio. */
+
+function updateToLeft() {
+    const imgsContainer = document.querySelector('#imgs-container') as HTMLElement
+    if (!imgsContainer.classList.contains('fluid-transition'))
+        imgsContainer.classList.add('fluid-transition')
+    const dots = document.querySelectorAll('.dot')
+
+    if (readyToScroll) {
+        readyToScroll = false
+
+        if (carouselIndex <= 0) {
+            imgsContainer.prepend(lastImg)
+
+            imgsContainer.classList.remove('fluid-transition')
+            imgsContainer.style.transform = `translateX(-${carouselSection.offsetWidth}px)`
+
+            setTimeout(() => {
+                imgsContainer.classList.add('fluid-transition')
+                imgsContainer.style.transform = `translateX(0px)`
+            }, 50)
+
+            imgsContainer.addEventListener('transitionend', () => {
+                imgsContainer.classList.remove('fluid-transition')
+                imgsContainer.style.transform = `translateX(-${carouselSection.offsetWidth * (dots.length - 1)}px)`
+                imgsContainer.removeChild(lastImg)
+            }, {once: true})
+
+            carouselIndex = dots.length - 1
+        } else {
+            carouselIndex--
+            imgsContainer.style.transform = `translateX(-${carouselSection.offsetWidth * carouselIndex}px)`  
+        }
+    }
+
+    imgsContainer.addEventListener('transitionend', () => readyToScroll = true, {once: true})
+    updateDots()
+}
+
+function updateDots() {
+    const dots = document.querySelectorAll('.dot') as NodeListOf<HTMLElement>
+    removeMarkedDots()
+    dots[carouselIndex].classList.add('marked-dot')
 }
 
 function removeMarkedDots() {
     document.querySelectorAll('.dot').forEach(dot => dot.classList.remove('marked-dot'))
-}  
+}
 
 

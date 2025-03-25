@@ -17,12 +17,14 @@
 
 :root {
     --primary-color: #221000;
-    --secundary-color: #EBD998;
+    --secondary-color: #EBD998;
     --highlight-color: #FAD012;
     --white: #fafafa;
     --white2: #eeeeee;
+    --grey: #0000004b;
+    --grey2: #212529;
     --black: #080808;
-    --radius: 15px;
+    --radius: 1.5rem;
     --box-shadow: 2px 3px 8px 0px #0000004b;
 }
 
@@ -36,9 +38,13 @@ html, body {
     scroll-behavior: smooth;
 }
 
+img {
+    user-select: none;
+}
+
 body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    background-color: var(--secundary-color);
+    background-color: var(--secondary-color);
     /* overflow-x: hidden; */
 }
 
@@ -117,7 +123,9 @@ section.carousel {
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 1em 0;
+    overflow-x: hidden;
+    padding: 1em 0; 
+    margin: auto;
     margin-bottom: 3rem;
     background-color: var(--primary-color);
     box-shadow: var(--box-shadow);
@@ -127,34 +135,53 @@ section.carousel {
     display: flex;
     justify-content: flex-start;
     width: 100%;
-    transition: 1s transform;
-    overflow-x: auto;
-    scroll-snap-stop: always;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
 }
 
 #imgs-container img {
-    width: 95%;
-    margin: 0 1em;
-    transition: transform 3s;
-    scroll-snap-align: center;
+    width: 100%;
+    object-fit: cover;
 }
 
-.arrow {
+/* Classes dinâmicas */
+
+.fluid-transition {
+    transition: .5s transform;
+}
+
+/* --------------- */
+
+.arrow-container {
     position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 70%;
+    width: 20%;
 }
 
-.arrow:hover {
- animation: scaledown 0.3s ease-in-out forwards;    
-}
-
-.arrow-left {
+.left-arrow-container {
     left: 1em;
 }
 
-.arrow-right {
+.right-arrow-container {
     right: 1em;
+}
+
+.arrow {
+    width: 2.5em;
+}
+
+.arrow-container:hover .arrow {
+    animation: scaledown 0.2s ease-in-out forwards;
+}
+
+.arrow-left {
+    align-self: flex-start;
+}
+
+.arrow-right {
+    align-self: flex-end;
 }
 
 .pagination-dots {
@@ -169,9 +196,9 @@ section.carousel {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 14px;
-    height: 14px;
-    background-color: #eeeeee;
+    width: 1em;
+    height: 1em;
+    background-color: var(--grey);
     border-radius: 50%;
 }
 
@@ -220,6 +247,4 @@ footer {
     margin-top: 2rem;
     box-shadow: var(--box-shadow);
 }
-
-/* Estilos dinâmicos */
 
