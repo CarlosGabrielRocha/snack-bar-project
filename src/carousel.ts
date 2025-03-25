@@ -19,6 +19,7 @@ let carouselIndex: number /* Variável global que acompanha a posição do carro
 let isInteracting = false
 let currentIntervalId = null
 function handleAutoRotation() {
+    const imgsContainer = document.querySelector('#imgs-container') as HTMLElement
     if (isInteracting && currentIntervalId) {
         clearInterval(currentIntervalId)
         currentIntervalId = null
@@ -28,6 +29,12 @@ function handleAutoRotation() {
             currentIntervalId = setTimeout(() => {
                 updateToRight()
                 currentIntervalId = null
+
+                imgsContainer.addEventListener('transitionend', () => {
+                    isInteracting = false
+                    handleAutoRotation()
+                    console.log('chamou') 
+                }, {once: true}) 
             }, 4000)
         })
         console.log(isInteracting)
@@ -74,11 +81,6 @@ export function renderCarousel() {
                 handleAutoRotation()
             }
         })
-    
-        carouselSection.addEventListener('transitionend', () => {
-            isInteracting = false
-            handleAutoRotation()   
-        }) 
  
         carouselSection.addEventListener('pointerout', () => {
             if (isInteracting) {
