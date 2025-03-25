@@ -22,15 +22,15 @@ function handleAutoRotation() {
     if (isInteracting && currentIntervalId) {
         clearInterval(currentIntervalId)
         currentIntervalId = null
-        /* console.log(isInteracting) */
-    } else if (!isInteracting && currentIntervalId === null) {
+        console.log(isInteracting)
+    } else if (!isInteracting && !currentIntervalId) {
         requestAnimationFrame(() => {
             currentIntervalId = setTimeout(() => {
                 updateToRight()
                 currentIntervalId = null
             }, 4000)
         })
-        /* console.log(isInteracting) */
+        console.log(isInteracting)
     }
 } 
 
@@ -45,7 +45,9 @@ export function renderCarousel() {
 
         /* O offsetWidth devolve a largura do container, isso está sendo usado para que o carrosel funcione da mesma forma independente da largura do container. */
         dot.addEventListener('click', () => {
-             imgsContainer.style.transform = `translateX(-${carouselSection.offsetWidth * index}px)`
+            if (!imgsContainer.classList.contains('fluid-transition'))
+                imgsContainer.classList.add('fluid-transition')
+            imgsContainer.style.transform = `translateX(-${carouselSection.offsetWidth * index}px)`
             removeMarkedDots()
             dot.classList.add('marked-dot')
             carouselIndex = index
@@ -66,18 +68,23 @@ export function renderCarousel() {
     conflitos. */
         handleAutoRotation()
         carouselSection.addEventListener('click', () => {
-            isInteracting = true
-            handleAutoRotation()
+            // Por conta do usuário conseguir clicar várias vezes, a condição abaixo evita quebrar a aplicação.
+            if (!isInteracting) {
+                isInteracting = true
+                handleAutoRotation()
+            }
         })
     
         carouselSection.addEventListener('transitionend', () => {
             isInteracting = false
-            handleAutoRotation()
+            handleAutoRotation()   
         }) 
-
+ 
         carouselSection.addEventListener('pointerout', () => {
-            isInteracting = false
-            handleAutoRotation()
+            if (isInteracting) {
+                isInteracting = false
+                handleAutoRotation()
+            }
         })
 
         window.addEventListener('resize', () => {
