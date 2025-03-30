@@ -1,4 +1,4 @@
-import { createElement, newMidiaElement } from "./create-elements"
+import { createElement, newButton, newMidiaElement } from "./create-elements"
 
 let firstImg: HTMLImageElement
 let lastImg: HTMLImageElement
@@ -23,7 +23,7 @@ function handleAutoRotation() {
     if (isInteracting && currentIntervalId) {
         clearInterval(currentIntervalId)
         currentIntervalId = null
-        console.log(isInteracting)
+        /* console.log(isInteracting) */
     } else if (!isInteracting && !currentIntervalId) {
         requestAnimationFrame(() => {
             currentIntervalId = setTimeout(() => {
@@ -33,11 +33,11 @@ function handleAutoRotation() {
                 imgsContainer.addEventListener('transitionend', () => {
                     isInteracting = false
                     handleAutoRotation()
-                    console.log('chamou') 
+                    /* console.log('chamou') */ 
                 }, {once: true}) 
             }, 4000)
         })
-        console.log(isInteracting)
+        /* console.log(isInteracting) */
     }
 } 
 
@@ -48,7 +48,7 @@ export function renderCarousel() {
     urls.forEach((url: string, index: number) => {
         const img = newMidiaElement('img', url)
         imgsContainer.appendChild(img)
-        const dot = createElement('div', '', 'dot')
+        const dot = newButton('', 'dot')
 
         /* O offsetWidth devolve a largura do container, isso está sendo usado para que o carrosel funcione da mesma forma independente da largura do container. */
         dot.addEventListener('click', () => {

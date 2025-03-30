@@ -21,3 +21,9 @@ export function newAnchorElement(href: string) {
     a.href = href
     return a
 }
+
+export function newButton(id: string, className: string, ...attributes: AttributesPair[]) {
+    const button = createElement('button', id, className) as HTMLButtonElement
+    attributes.forEach((pair: AttributesPair) => button.setAttribute(pair[0], pair[1]))
+    return button
+}
